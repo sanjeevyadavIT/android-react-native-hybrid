@@ -2,12 +2,12 @@ package com.sanjeevyadavit.react
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.facebook.react.PackageList
 import com.facebook.react.ReactInstanceManager
 import com.facebook.react.ReactPackage
 import com.facebook.react.ReactRootView
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler
+import com.facebook.react.shell.MainReactPackage
 import com.facebook.soloader.SoLoader
 
 
@@ -20,13 +20,13 @@ class DetailActivity : AppCompatActivity(), DefaultHardwareBackBtnHandler {
         super.onCreate(savedInstanceState)
         SoLoader.init(this, false);
         mReactRootView = ReactRootView(this);
-        val packages: List<ReactPackage> = PackageList(application).getPackages()
+        val packages: List<ReactPackage> = mutableListOf(MainReactPackage())
         // Packages that cannot be autolinked yet can be added manually here, for example:
         // packages.add(new MyReactNativePackage());
         // Remember to include them in `settings.gradle` and `app/build.gradle` too.
 
         mReactInstanceManager = ReactInstanceManager.builder()
-            .setApplication(getApplication())
+            .setApplication(application)
             .setCurrentActivity(this)
             .setBundleAssetName("index.android.bundle")
             .setJSMainModulePath("index")
