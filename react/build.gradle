@@ -3,18 +3,21 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 project.ext.react = [
-        enableHermes: false,  // clean and rebuild if changing
+        enableHermes: true,  // clean and rebuild if changing
         entryFile: "index.js",
         bundleAssetName: "index.android.bundle",
         root: "${project.rootDir}/reactNative/",
-//        Pair("hermesCommand", "${project.rootDir}/reactNative/node_modules/hermes-engine/%OS-BIN%/hermesc"),
-//        Pair("bundleInDebug", false),
-//        Pair("bundleInRelease", true),
-//        Pair("devDisabledInRelease", true),
+        hermesCommand: "${project.rootDir}/reactNative/node_modules/hermes-engine/%OS-BIN%/hermesc",
+        bundleInDebug: false,
+        bundleInRelease: true,
+        devDisabledInRelease: true,
         "cliPath": "${project.rootDir}/reactNative/node_modules/react-native/cli.js",
-//        Pair("ndkVersion", libs.versions.ndkVersion.get())
+        //ndkVersion: "x.x.x"
 ]
-//apply from: "../reactNative/node_modules/react-native/react.gradle"
+// apply from: "../reactNative/node_modules/react-native/react.gradle"
+
+def jscFlavor = 'org.webkit:android-jsc:+'
+def enableHermes = project.ext.react.get("enableHermes", false)
 
 // For Auto-linking
 // apply from: file("../reactNative/node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
@@ -59,7 +62,14 @@ dependencies {
 
     // react related
     implementation "com.facebook.react:react-native:0.63.4" // From node_modules
-    implementation "org.webkit:android-jsc:+"
+
+    if (enableHermes) {
+        def hermesPath = "${project.rootDir}/reactNative/node_modules/hermes-engine/android/"
+        debugImplementation files(hermesPath + "hermes-debug.aar")
+        releaseImplementation files(hermesPath + "hermes-release.aar")
+    } else {
+        implementation jscFlavor
+    }
 
 
     testImplementation 'junit:junit:4.13.2'
