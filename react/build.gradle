@@ -1,7 +1,28 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
 }
+project.ext.react = [
+        enableHermes: false,  // clean and rebuild if changing
+        entryFile: "index.js",
+        bundleAssetName: "index.android.bundle",
+        root: "${project.rootDir}/reactNative/",
+        hermesCommand: "${project.rootDir}/reactNative/node_modules/hermes-engine/%OS-BIN%/hermesc",
+        bundleInDebug: false,
+        bundleInRelease: true,
+        devDisabledInRelease: true,
+        "cliPath": "${project.rootDir}/reactNative/node_modules/react-native/cli.js",
+        //ndkVersion: "x.x.x"
+]
+// apply from: "../reactNative/node_modules/react-native/react.gradle"
+
+def jscFlavor = 'org.webkit:android-jsc:+'
+def enableHermes = project.ext.react.get("enableHermes", false)
+
+// For Auto-linking
+// apply from: file("../reactNative/node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 
 android {
     compileSdk 32
@@ -33,14 +54,35 @@ android {
 }
 
 dependencies {
-
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+
+    // Hilt DI
+    implementation "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-compiler:2.44"
+
+    // react related
+    implementation "com.facebook.react:react-native:0.63.4" // From node_modules
+
+    if (enableHermes) {
+        def hermesPath = "${project.rootDir}/reactNative/node_modules/hermes-engine/android/"
+        debugImplementation files(hermesPath + "hermes-debug.aar")
+        releaseImplementation files(hermesPath + "hermes-release.aar")
+    } else {
+        implementation jscFlavor
+    }
+
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes true
 }

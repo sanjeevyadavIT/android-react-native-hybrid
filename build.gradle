@@ -7,8 +7,33 @@ plugins {
     id 'com.android.application' version '7.2.2' apply false
     id 'com.android.library' version '7.2.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
+    id 'com.google.dagger.hilt.android' version '2.44' apply false
+}
+
+allprojects {
+    repositories {
+        maven {
+            // All of React Native (JS, Android binaries) is installed from npm
+            url "$rootDir/reactNative/node_modules/react-native/android"
+        }
+        maven {
+            // Android JSC is installed from npm
+            url("$rootDir/reactNative/node_modules/jsc-android/dist")
+        }
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+task installReact {
+    exec {
+        workingDir rootProject.rootDir
+        commandLine 'sh', 'installReact.sh'
+        ignoreExitValue true
+    }
 }
