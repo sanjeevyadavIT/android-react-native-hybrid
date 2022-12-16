@@ -5,6 +5,20 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+project.ext.react = [
+        enableHermes: false,  // clean and rebuild if changing
+        entryFile: "index.js",
+        bundleAssetName: "index.android.bundle",
+        root: "${project.rootDir}/reactNative/",
+        hermesCommand: "${project.rootDir}/reactNative/node_modules/hermes-engine/%OS-BIN%/hermesc",
+        bundleInDebug: false,
+        bundleInRelease: true,
+        devDisabledInRelease: true,
+        "cliPath": "${project.rootDir}/reactNative/node_modules/react-native/cli.js",
+        //ndkVersion: "x.x.x"
+]
+apply from: "../reactNative/node_modules/react-native/react.gradle"
+
 android {
     compileSdk 32
 
