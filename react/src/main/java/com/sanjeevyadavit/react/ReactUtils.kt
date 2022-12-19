@@ -3,6 +3,7 @@ package com.sanjeevyadavit.react
 import android.app.Application
 import android.util.Log
 import com.facebook.react.ReactNativeHost
+import com.facebook.react.config.ReactFeatureFlags
 import com.facebook.soloader.SoLoader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,6 +23,8 @@ class ReactUtils @Inject constructor(
 
         withContext(Dispatchers.IO) {
             try {
+                // If you opted-in for the New Architecture, we enable the TurboModule system
+                ReactFeatureFlags.useTurboModules = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
                 SoLoader.init(application, false)
             } catch (e: IllegalStateException) {
                 e.message?.let { Log.e("REACT ERROR", it) }
