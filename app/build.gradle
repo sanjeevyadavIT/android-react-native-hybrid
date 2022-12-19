@@ -5,8 +5,15 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+def enabledHermes = false
+
+rootProject.ext.react = [
+        enableHermes: enabledHermes,  // Hack
+        ndkVersion: "24.0.8215888"
+]
+
 project.ext.react = [
-        enableHermes: false,  // clean and rebuild if changing
+        enableHermes: enabledHermes,  // clean and rebuild if changing
         entryFile: "index.js",
         bundleAssetName: "index.android.bundle",
         root: "${project.rootDir}/reactNative/",
